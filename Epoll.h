@@ -1,16 +1,37 @@
+
 #ifndef _EPOLL_H
 #define _EPOLL_H
-
+#include "Channel.h"
 #include "ParseWeb.h"
-#include  <sys/epoll.h>
-#include "ThreadPool.h"
-const int MAXEVENTS = 2048;
-const int SIZE = 1;//Since Linux 2.6.8,the size argument is ignored, but must be greater than zero
-int EpollCreate();
-int EpollAdd(int epoll_fd, int fd, void *request, __int32_t events);
-int EpollMod(int epoll_fd, int fd, void *request, __int32_t events);
-int EpollDel(int epoll_fd, int fd, void *request, __int32_t events);
-int EpollWait(int epoll_fd, int fd, void *request, __int32_t events);
-void HandleEvents(int epoll_fd, int listen_fd, struct epoll_event *events, 
-                                        int events_num, char *path, threadpool_t *tp);
+#include "Timer.h"
+#include <vector>
+#include <unordered_map>
+#include <sys/epoll.h>
+#include <memory>
+
+class Epoll
+{
+public:
+    Epoll();
+    ~Epoll();
+    void epoll_add(SP_Channel request, int timeout);
+    void epoll_mod(SP_Channel request, int timeout);
+    void epoll_del(SP_Channel request);
+    std::vector<std::shared_ptr<Channel>> poll();
+    std::vector<std::shared_ptr<Channel>> getEventsRequest(int events_num);
+    void add_timer(std::shared_ptr<Channel> request_data, int timeout);
+    int getEpollFd()
+    {
+        return epollFd_;
+    }
+    void handleExpired();
+private:
+    static const int MAXFDS = 100000;
+    int epollFd_;
+    std::vector<epoll_event> events_;
+    std::shared_ptr<Channel> fd2chan_[MAXFDS];
+    std::shared_ptr<ClientRequest> fd2http_[MAXFDS];
+    TimerManager timerManager_;
+};
+
 #endif
