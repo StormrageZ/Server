@@ -7,7 +7,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
-
+#include <iostream>
 const int MAX_BUFF = 4096;
 ssize_t readn(int fd, void *buff, size_t n)
 {
@@ -254,5 +254,6 @@ int socket_bind_listen(int port)
         close(listen_fd);
         return -1;
     }
+    std::cout<<"listendfd"<<listen_fd<<std::endl;
     return listen_fd;
 }

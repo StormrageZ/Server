@@ -1,12 +1,12 @@
 #pragma once
-#include "NoCopy.h"
-#include "ParseWeb.h"
+#include "../Encapsulate/NoCopy.h"
+#include "../Server/ParseWeb.h"
 #include <unistd.h>
 #include <memory>
 #include <queue>
-//实现了一个小根堆的定时器及时剔除超时请求，使用了STL的优先队列来管理定时器
-//
+
 class ClientRequest;
+//实现了一个小根堆的定时器及时剔除超时请求，使用了STL的优先队列来管理定时器
 class TimerNode
 {
 public:

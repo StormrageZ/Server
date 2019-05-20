@@ -3,7 +3,6 @@
 
 #include <cstdlib>
 #include <string>
-
 //封装read write函数 增强鲁棒性
 ssize_t readn(int fd, void *buff, size_t n);
 ssize_t readn(int fd, std::string &inBuffer, bool &zero);

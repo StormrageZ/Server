@@ -1,8 +1,8 @@
 
 #pragma once
 #include "FileUtil.h"
-#include "MutexLock.h"
-#include "NoCopy.h"
+#include "../Encapsulate/MutexLock.h"
+#include "../Encapsulate/NoCopy.h"
 #include <memory>
 #include <string>
 

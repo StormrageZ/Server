@@ -1,9 +1,8 @@
-
 #ifndef _EPOLL_H
 #define _EPOLL_H
-#include "Channel.h"
-#include "ParseWeb.h"
-#include "Timer.h"
+#include "../EventLoop/Channel.h"
+#include "../Server/ParseWeb.h"
+#include "../Encapsulate/Timer.h"
 #include <vector>
 #include <unordered_map>
 #include <sys/epoll.h>
@@ -14,9 +13,9 @@ class Epoll
 public:
     Epoll();
     ~Epoll();
-    void epoll_add(SP_Channel request, int timeout);
-    void epoll_mod(SP_Channel request, int timeout);
-    void epoll_del(SP_Channel request);
+    void epoll_add(std::shared_ptr<Channel> request, int timeout);
+    void epoll_mod(std::shared_ptr<Channel> request, int timeout);
+    void epoll_del(std::shared_ptr<Channel> request);
     std::vector<std::shared_ptr<Channel>> poll();
     std::vector<std::shared_ptr<Channel>> getEventsRequest(int events_num);
     void add_timer(std::shared_ptr<Channel> request_data, int timeout);

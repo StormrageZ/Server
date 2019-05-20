@@ -1,17 +1,15 @@
+//
 #pragma once
 #include "Thread.h"
-#include "Epoll.h"
-#include "Logging.h"
+#include "../Encapsulate/EpollPoller.h"
+#include "../Log/Logging.h"
 #include "Channel.h"
-#include "CurrentThread.h"
-#include "Util.h"
+#include "../Encapsulate/Util.h"
 #include <vector>
 #include <memory>
 #include <functional>
-
 #include <iostream>
 using namespace std;
-
 
 class EventLoop
 {
@@ -34,7 +32,7 @@ public:
     }
     void removeFromPoller(shared_ptr<Channel> channel)
     {
-        //shutDownWR(channel->getFd());
+        
         poller_->epoll_del(channel);
     }
     void updatePoller(shared_ptr<Channel> channel, int timeout = 0)
@@ -47,7 +45,7 @@ public:
     }
     
 private:
-    // 声明顺序 wakeupFd_ > pwakeupChannel_
+    // 声明顺序 wakeupFd_ > WakeUpChannel
     bool looping_;
     shared_ptr<Epoll> poller_;
     int wakeupFd_;
@@ -57,7 +55,7 @@ private:
     std::vector<Functor> pendingFunctors_;
     bool callingPendingFunctors_;
     const pid_t threadId_; 
-    shared_ptr<Channel> pwakeupChannel_;
+    shared_ptr<Channel> WakeUpChannel;
     
     void wakeup();
     void handleRead();

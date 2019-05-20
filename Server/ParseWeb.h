@@ -1,6 +1,6 @@
 #ifndef _PARSEWEB_H
 #define _PARSEWEB_H
-#include "Timer.h"
+#include "../Encapsulate/Timer.h"
 #include <string>
 #include <unordered_map>
 #include <map>
@@ -12,7 +12,7 @@ class EventLoop;
 class TimerNode;
 class Channel;
 //当前解析hhtp请求的状态
-enum ProcessState
+enum CurParseState
 {
     STATE_PARSE_URI = 1,
     STATE_PARSE_HEADERS,
@@ -108,32 +108,31 @@ public:
     void newEvent();
 
 private:
-    EventLoop *loop_;
-    std::shared_ptr<Channel> channel_;
-    int fd_;
-    std::string inBuffer_;
-    std::string outBuffer_;
-    bool error_;
-    ConnectionState connectionState_;
-
-    HttpMethod method_;
-    HttpVersion HTTPVersion_;
-    std::string fileName_;
-    std::string path_;
-    int nowReadPos_;
-    ProcessState state_;
+    EventLoop *loop_; //所在事件循环
+    std::shared_ptr<Channel> channel_;//Channel
+    int fd_;//客户端连接的描述符号
+    std::string inBuffer_;//读缓冲
+    std::string outBuffer_;//写缓冲
+    bool error_;//是否出错
+    ConnectionState connectionState_;//连接状态
+    HttpMethod method_; //请求方法
+    HttpVersion HTTPVersion_;//版本号
+    std::string fileName_;//文件名
+    std::string path_;//路径
+    int nowReadPos_;//当前解析位置
+    CurParseState curState;
     ParseState hState_;
-    bool keepAlive_;
-    std::map<std::string, std::string> headers_;
-    std::weak_ptr<TimerNode> timer_;
-
-    void handleRead();
-    void handleWrite();
-    void handleConn();
-    void handleError(int fd, int err_num, std::string short_msg);
-    URIState parseURI();
-    HeaderState parseHeaders();
     AnalysisState analysisRequest();
+    bool keepAlive_;//长连接或短连接
+    std::map<std::string, std::string> headers_;
+    std::weak_ptr<TimerNode> timer_;//计时器
+
+    void handleRead();//处理读
+    void handleWrite();//处理写
+    void handleConn();//处理新连接
+    void handleError(int fd, int err_num, std::string short_msg);//处理错误
+    URIState parseURI();//解析URI
+    HeaderState parseHeaders();//解析请求头
 };
 
 #endif

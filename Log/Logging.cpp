@@ -1,7 +1,6 @@
 
 #include "Logging.h"
-#include "CurrentThread.h"
-#include "Thread.h"
+#include "../EventLoop/Thread.h"
 #include "AsyncLogging.h"
 #include <assert.h>
 #include <iostream>

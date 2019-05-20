@@ -1,8 +1,8 @@
 
 #pragma once
-#include "Condition.h"
-#include "MutexLock.h"
-#include "NoCopy.h"
+#include "Encapsulate/Condition.h"
+#include "Encapsulate/MutexLock.h"
+#include "Encapsulate/NoCopy.h"
 
 // CountDownLatch的主要作用是确保Thread中传进去的func真的启动了以后
 // 外层的start才返回

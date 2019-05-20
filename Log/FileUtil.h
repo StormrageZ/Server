@@ -1,6 +1,6 @@
 
 #pragma once
-#include "NoCopy.h"
+#include "../Encapsulate/NoCopy.h"
 #include <string>
 
 class AppendFile : NoCopy

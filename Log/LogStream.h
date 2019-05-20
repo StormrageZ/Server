@@ -1,5 +1,5 @@
 #pragma once
-#include "NoCopy.h"
+#include "../Encapsulate/NoCopy.h"
 #include <assert.h>
 #include <string.h>
 #include <string>

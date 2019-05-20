@@ -1,8 +1,8 @@
 
 #pragma once
-#include "EventLoop.h"
-#include "Channel.h"
-#include "EventLoopThreadPool.h"
+#include "../EventLoop/EventLoop.h"
+#include "../EventLoop/Channel.h"
+#include "../EventLoop/EventLoopThreadPool.h"
 #include <memory>
 
 
@@ -19,10 +19,10 @@ public:
 private:
     EventLoop *loop_;
     int threadNum_;
+    int port_;
+    int listenFd_;
     std::unique_ptr<EventLoopThreadPool> eventLoopThreadPool_;
     bool started_;
     std::shared_ptr<Channel> acceptChannel_;
-    int port_;
-    int listenFd_;
     static const int MAXFDS = 100000;
 };

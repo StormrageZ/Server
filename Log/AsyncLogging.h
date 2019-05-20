@@ -1,10 +1,10 @@
 #ifndef _ASYNCLOGGING_H
 #define _ASYNCLOGGING_H
-#include "CountDownLatch.h"
-#include "MutexLock.h"
-#include "Thread.h"
+#include "../CountDownLatch.h"
+#include "../Encapsulate/MutexLock.h"
+#include "../EventLoop/Thread.h"
 #include "LogStream.h"
-#include "NoCopy.h"
+#include "../Encapsulate/NoCopy.h"
 #include <functional>
 #include <string>
 #include <vector>

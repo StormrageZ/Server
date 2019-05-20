@@ -1,7 +1,7 @@
 
 #include "EventLoop.h"
-#include "Logging.h"
-#include "Util.h"
+#include "../Log/Logging.h"
+#include "../Encapsulate/Util.h"
 #include <sys/eventfd.h>
 #include <sys/epoll.h>
 #include <iostream>
@@ -11,7 +11,7 @@ __thread EventLoop* t_loopInThisThread = 0;
 
 int createEventfd()
 {
-    int evtfd = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
+    int evtfd = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);//linux下一个eventfd用于读写
     if (evtfd < 0)
     {
         LOG << "Failed in eventfd";
@@ -19,43 +19,39 @@ int createEventfd()
     }
     return evtfd;
 }
-
+//在线程函数中创建eventloop
 EventLoop::EventLoop()
-:   looping_(false),
-    poller_(new Epoll()),
-    wakeupFd_(createEventfd()),
-    quit_(false),
-    eventHandling_(false),
+:   looping_(false),//是否在循环
+    poller_(new Epoll()),//epoll轮询器
+    wakeupFd_(createEventfd()),//事件描述符
+    quit_(false),//是否关闭
+    eventHandling_(false),//事件是否处理中
     callingPendingFunctors_(false),
-    threadId_(CurrentThread::tid()),
-    pwakeupChannel_(new Channel(this, wakeupFd_))
+    threadId_(CurrentThread::tid()),//当前线程ID
+    WakeUpChannel(new Channel(this, wakeupFd_))
 {
-    if (t_loopInThisThread)
+    if (t_loopInThisThread)//one loop in one thread 避免重复创建
     {
-        //LOG << "Another EventLoop " << t_loopInThisThread << " exists in this thread " << threadId_;
+       
     }
     else
     {
         t_loopInThisThread = this;
     }
-    //pwakeupChannel_->setEvents(EPOLLIN | EPOLLET | EPOLLONESHOT);
-    pwakeupChannel_->setEvents(EPOLLIN | EPOLLET);
-    pwakeupChannel_->setReadHandler(bind(&EventLoop::handleRead, this));
-    pwakeupChannel_->setConnHandler(bind(&EventLoop::handleConn, this));
-    poller_->epoll_add(pwakeupChannel_, 0);
+    WakeUpChannel->setEvents(EPOLLIN | EPOLLET);
+    WakeUpChannel->setReadHandler(bind(&EventLoop::handleRead, this));
+    WakeUpChannel->setConnHandler(bind(&EventLoop::handleConn, this));
+    poller_->epoll_add(WakeUpChannel, 0);
 }
 
-void EventLoop::handleConn()
+void EventLoop::handleConn()//处理连接
 {
-    //poller_->epoll_mod(wakeupFd_, pwakeupChannel_, (EPOLLIN | EPOLLET | EPOLLONESHOT), 0);
-    updatePoller(pwakeupChannel_, 0);
+    updatePoller(WakeUpChannel, 0);
 }
 
 
 EventLoop::~EventLoop()
 {
-    //wakeupChannel_->disableAll();
-    //wakeupChannel_->remove();
     close(wakeupFd_);
     t_loopInThisThread = NULL;
 }
@@ -78,11 +74,11 @@ void EventLoop::handleRead()
     {
         LOG << "EventLoop::handleRead() reads " << n << " bytes instead of 8";
     }
-    //pwakeupChannel_->setEvents(EPOLLIN | EPOLLET | EPOLLONESHOT);
-    pwakeupChannel_->setEvents(EPOLLIN | EPOLLET);
+    //WakeUpChannel->setEvents(EPOLLIN | EPOLLET | EPOLLONESHOT);
+    WakeUpChannel->setEvents(EPOLLIN | EPOLLET);
 }
 
-void EventLoop::runInLoop(Functor&& cb)
+void EventLoop::runInLoop(Functor&& cb)//运行functor
 {
     if (isInLoopThread())
         cb();
@@ -101,25 +97,23 @@ void EventLoop::queueInLoop(Functor&& cb)
         wakeup();
 }
 
-void EventLoop::loop()
+void EventLoop::loop()//开始loop
 {
     assert(!looping_);
-    assert(isInLoopThread());
+    assert(isInLoopThread());//确认未开始状态
     looping_ = true;
-    quit_ = false;
-    //LOG_TRACE << "EventLoop " << this << " start looping";
-    std::vector<SP_Channel> ret;
-    while (!quit_)
+    quit_ = false;//开启状态
+    std::vector<std::shared_ptr<Channel>> ret;
+    while (!quit_)//循环
     {
-        //cout << "doing" << endl;
-        ret.clear();
-        ret = poller_->poll();
-        eventHandling_ = true;
-        for (auto &it : ret)
-            it->handleEvents();
-        eventHandling_ = false;
-        doPendingFunctors();
-        poller_->handleExpired();
+        ret.clear();//清空
+        ret = poller_->poll();//wait_epoll 获取就绪的事件
+        eventHandling_ = true;//标志着事件处理中
+        for (auto &it : ret) //C++ 11 for循环标准
+            it->handleEvents();//依次处理事件
+        eventHandling_ = false;//处理完毕
+        doPendingFunctors();//TODO：？
+        poller_->handleExpired();//处理超时问题
     }
     looping_ = false;
 }
@@ -139,7 +133,7 @@ void EventLoop::doPendingFunctors()
     callingPendingFunctors_ = false;
 }
 
-void EventLoop::quit()
+void EventLoop::quit()//关闭loop
 {
     quit_ = true;
     if (!isInLoopThread())

@@ -1,23 +1,23 @@
 
 set(SRCS
-    Channel.cpp
-    Epoll.cpp
-    EventLoop.cpp
-    EventLoopThread.cpp
-    EventLoopThreadPool.cpp
-    ParseWeb.cpp
+    EventLoop/Channel.cpp
+    Encapsulate/EpollPoller.cpp
+    EventLoop/EventLoop.cpp
+    EventLoop/EventLoopThread.cpp
+    EventLoop/EventLoopThreadPool.cpp
+    Server/ParseWeb.cpp
     Main.cpp
-    Server.cpp
+    Server/Server.cpp
     #ThreadPool.cpp
-    Timer.cpp
-    Util.cpp
-    AsyncLogging.cpp 
+    Encapsulate/Timer.cpp
+    Encapsulate/Util.cpp
+    Log/AsyncLogging.cpp 
     CountDownLatch.cpp 
-    FileUtil.cpp 
-    LogFile.cpp 
-    Logging.cpp 
-    LogStream.cpp 
-    Thread.cpp 
+    Log/FileUtil.cpp 
+    Log/LogFile.cpp 
+    Log/Logging.cpp 
+    Log/LogStream.cpp 
+    EventLoop/Thread.cpp 
 
 
 )

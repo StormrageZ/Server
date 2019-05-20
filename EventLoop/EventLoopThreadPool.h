@@ -1,8 +1,8 @@
 
 #pragma once
-#include "NoCopy.h"
+#include "../Encapsulate/NoCopy.h"
 #include "EventLoopThread.h"
-#include "Logging.h"
+#include "../Log/Logging.h"
 #include <memory>
 #include <vector>
 

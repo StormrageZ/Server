@@ -4,8 +4,8 @@
 
 
 EventLoopThread::EventLoopThread()
-:   loop_(NULL),
-    exiting_(false),
+:   loop_(NULL),//空循环事件
+    exiting_(false),//开始
     thread_(bind(&EventLoopThread::threadFunc, this), "EventLoopThread"),
     mutex_(),
     cond_(mutex_)

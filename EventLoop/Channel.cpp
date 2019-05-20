@@ -1,19 +1,12 @@
 #include "Channel.h"
-#include "Util.h"
-#include "Epoll.h"
+#include "../Encapsulate/Util.h"
+#include "../Encapsulate/EpollPoller.h"
 #include "EventLoop.h"
 #include <unistd.h>
 #include <queue>
 #include <cstdlib>
 #include <iostream>
 using namespace std;
-
-Channel::Channel(EventLoop *loop):
-    loop_(loop),
-    events_(0),
-    lastEvents_(0)
-{ }
-
 Channel::Channel(EventLoop *loop, int fd):
     loop_(loop),
     fd_(fd), 
@@ -30,10 +23,6 @@ Channel::~Channel()
 int Channel::getFd()
 {
     return fd_;
-}
-void Channel::setFd(int fd)
-{
-    fd_ = fd;
 }
 
 void Channel::handleRead()
