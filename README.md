@@ -1,4 +1,5 @@
 # WEB_SERVER
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT)
 ## 高性能静态网页服务器
    这是一个 Web 服务器项目，目前支持 GET 和 HEAD 请求的解析，POST请求待更新，可以处理静态网页的请求，支持 HTTP 长/短连接，以异步日志的方式保存服务器的运行状态。
 ## 技术要点
