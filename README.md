@@ -19,4 +19,5 @@
 * 主线程调用 epoll_wait 等待socket上的读就绪事件
 * 当socket上有数据可读时，epoll_wait 通知主线程。主线程将socket可读事件放入请求队列。
 * 睡眠在请求队列上的某个工作线程被唤醒，他从 socket 读取数据，并处理客户请求，然后往 epoll 内核事件表中注册该 socket 上的写就绪事件。
-(https://github.com/StormrageZ/WEB_SERVER/blob/master/docs/Reactor.png)
+<div align="center"> <img src="https://github.com/StormrageZ/WEB_SERVER/blob/master/docs/Reactor.png" width="500"/> </div><br>
+
