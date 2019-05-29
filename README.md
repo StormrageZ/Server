@@ -1,4 +1,6 @@
 # WEB_SERVER
+##高性能静态网页服务器
+###这是一个Web服务器项目，目前支持 GET 和 HEAD 请求的解析，POST请求待更新，可以处理静态网页的请求，支持HTTP长/短连接，以异步日志的方式保存服务器的运行状态。
 ## Technical points
 * 采用 Reactor 的事件处理模式
 * 使用 Epoll 的 ET 模式实现高效的 I/O 多路复用，NoblockIO
