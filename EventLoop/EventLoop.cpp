@@ -17,6 +17,7 @@ int createEventfd()
         LOG << "Failed in eventfd";
         abort();
     }
+    cout<<"创建eventfd："<<evtfd<<endl;
     return evtfd;
 }
 //在线程函数中创建eventloop
@@ -29,10 +30,10 @@ EventLoop::EventLoop()
     callingPendingFunctors_(false),
     threadId_(CurrentThread::tid()),//当前线程ID
     WakeUpChannel(new Channel(this, wakeupFd_))
-{
+{   
+    cout<<"初始化eventloop ,并创建事件循环所需的epollfd和与主线程通信eventfd"<<endl;
     if (t_loopInThisThread)//one loop in one thread 避免重复创建
-    {
-       
+    { 
     }
     else
     {
@@ -45,7 +46,7 @@ EventLoop::EventLoop()
 }
 
 void EventLoop::handleConn()//处理连接
-{
+{   
     updatePoller(WakeUpChannel, 0);
 }
 
@@ -57,7 +58,8 @@ EventLoop::~EventLoop()
 }
 
 void EventLoop::wakeup()
-{
+{   
+    cout<<"调用wakeup()"<<endl;
     uint64_t one = 1;
     ssize_t n = writen(wakeupFd_, (char*)(&one), sizeof one);
     if (n != sizeof one)
@@ -67,19 +69,20 @@ void EventLoop::wakeup()
 }
 
 void EventLoop::handleRead()
-{
+{   
+    cout<<"调用read eventfd"<<endl;
     uint64_t one = 1;
     ssize_t n = readn(wakeupFd_, &one, sizeof one);
     if (n != sizeof one)
     {
         LOG << "EventLoop::handleRead() reads " << n << " bytes instead of 8";
     }
-    //WakeUpChannel->setEvents(EPOLLIN | EPOLLET | EPOLLONESHOT);
     WakeUpChannel->setEvents(EPOLLIN | EPOLLET);
 }
 
 void EventLoop::runInLoop(Functor&& cb)//运行functor
 {
+    cout<<"调用runInLoop"<<endl;
     if (isInLoopThread())
         cb();
     else
@@ -88,6 +91,7 @@ void EventLoop::runInLoop(Functor&& cb)//运行functor
 
 void EventLoop::queueInLoop(Functor&& cb)
 {
+    cout<<"调用queueInLoop"<<endl;
     {
         MutexLockGuard lock(mutex_);
         pendingFunctors_.emplace_back(std::move(cb));
@@ -98,9 +102,10 @@ void EventLoop::queueInLoop(Functor&& cb)
 }
 
 void EventLoop::loop()//开始loop
-{
+{   
+    cout<<"开始loop"<<endl;
     assert(!looping_);
-    assert(isInLoopThread());//确认未开始状态
+    assert(isInLoopThread());
     looping_ = true;
     quit_ = false;//开启状态
     std::vector<std::shared_ptr<Channel>> ret;
@@ -120,6 +125,7 @@ void EventLoop::loop()//开始loop
 
 void EventLoop::doPendingFunctors()
 {
+    cout<<"调用doPendingFunctors"<<endl;
     std::vector<Functor> functors;
     callingPendingFunctors_ = true;
 

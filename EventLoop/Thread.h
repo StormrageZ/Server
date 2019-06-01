@@ -6,6 +6,7 @@
 #include <memory>
 #include <pthread.h>
 #include <string>
+#include <stdint.h>
 #include <sys/syscall.h>
 #include <unistd.h>
 
@@ -31,10 +32,6 @@ private:
     std::string name_;
     CountDownLatch latch_;
 };
-
-#pragma once
-#include <stdint.h>
-
 
 namespace CurrentThread
 {

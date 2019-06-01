@@ -60,7 +60,8 @@ ClientRequest::ClientRequest(EventLoop *loop, int connfd):
         curState(STATE_PARSE_URI), //开始处于解析URI状态
         hState_(H_START),//解析开始
         keepAlive_(false)//关闭长连接
-{
+{   
+    cout<<"初始化客户端http连接信息"<<endl;
     //loop_->queueInLoop(bind(&ClientRequest::setHandlers, this));
     channel_->setReadHandler(bind(&ClientRequest::handleRead, this));
     channel_->setWriteHandler(bind(&ClientRequest::handleWrite, this));//交给channel处理
@@ -97,7 +98,8 @@ void ClientRequest::seperateTimer()//分离计时器
 }
 
 void ClientRequest::handleRead()//读请求
-{
+{   
+    cout<<"handleread"<<endl;
     int &events_ = channel_->getEvents();
     do
     {
@@ -307,6 +309,7 @@ void ClientRequest::handleConn()
 
 URIState ClientRequest::parseURI()
 {
+    cout<<"解析URI"<<endl;
     string &str = inBuffer_;
     string cop = str;
     // 读到完整的请求行再开始解析请求
@@ -401,6 +404,7 @@ URIState ClientRequest::parseURI()
 
 HeaderState ClientRequest::parseHeaders()//解析请求头
 {
+    cout<<"解析请求头"<<endl;
     string &str = inBuffer_;
     int key_start = -1, key_end = -1, value_start = -1, value_end = -1;
     int now_read_line_begin = 0;
@@ -517,7 +521,8 @@ HeaderState ClientRequest::parseHeaders()//解析请求头
 }
 
 AnalysisState ClientRequest::analysisRequest()
-{
+{   
+    cout<<"分析请求方法"<<endl;
     if (method_ == METHOD_POST)
     {
         // ------------------------------------------------------

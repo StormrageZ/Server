@@ -22,7 +22,8 @@ const int EPOLLWAIT_TIME = 10000;
 Epoll::Epoll():
     epollFd_(epoll_create1(EPOLL_CLOEXEC)),
     events_(EVENTSNUM)
-{
+{   
+    cout<<"创建新的epoll_fd: "<<epollFd_<<endl;
     assert(epollFd_ > 0);
 }
 Epoll::~Epoll()
@@ -41,9 +42,8 @@ void Epoll::epoll_add(std::shared_ptr<Channel> request, int timeout)
     struct epoll_event event;
     event.data.fd = fd;
     event.events = request->getEvents();
-
     request->EqualAndUpdateLastEvents();
-    cout<<"epoll关注的描述符"<<fd<<endl;
+    cout<<"epoll_fd开始监听描述符："<<fd<<endl;
     fd2chan_[fd] = request;
     if(epoll_ctl(epollFd_, EPOLL_CTL_ADD, fd, &event) < 0)
     {

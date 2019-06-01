@@ -40,11 +40,11 @@ int main(int argc, char *argv[])
         }
     }
     Logger::setLogFileName(logPath);//确定log日志存放路径
-    cout<<"定义主线程\n";
+    cout<<"初始化主线程\n";
     EventLoop Main;//非new定义对象，在栈中分配存储空间
-   cout<<"定义子线程\n";
+   cout<<"初始化子线程\n";
     Server HTTPServer(&Main, threadNum, port);
-    cout<<"开启子线程\n";
+    cout<<"开启线程池\n";
     HTTPServer.start();
     cout<<"开启主线程\n";
     Main.loop();
