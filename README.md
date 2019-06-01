@@ -20,7 +20,11 @@
 * 当socket上有数据可读时，epoll_wait 通知主线程。主线程将socket可读事件放入请求队列。
 * 睡眠在请求队列上的某个工作线程被唤醒，他从 socket 读取数据，并处理客户请求，然后往 epoll 内核事件表中注册该 socket 上的写就绪事件。
 <div align="center"> <img src="https://github.com/StormrageZ/WEB_SERVER/blob/master/docs/Reactor.png" /> </div><br>
-
 ## One Loop per Thread
 <div align="center"> <img src="https://github.com/StormrageZ/WEB_SERVER/blob/master/docs/threadloop.png" /> </div><br>
-
+## 处理新连接的流程
+ * 根据配置的端口号、工作线程数和Log记录path开启服务器
+ * 初始化服务器（初始化主线程、初始化线程池、绑定listen_fd、INADDR_ANY和port）
+ * 开启线程池，Channel 给主线程分发对应的IO处理函数（处理新连接，RR分配给子线程）
+ * 开启主线程，开始事件循环，当新的客户端连接到来时，主线程epoll_fd监听的listen_fd出现可读事件，accept循环接受新的连接，并且以RR的方式分配给子线程。
+ *
