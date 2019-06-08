@@ -23,6 +23,7 @@
 
 ## One Loop per Thread
 <div align="center"> <img src="https://github.com/StormrageZ/WEB_SERVER/blob/master/docs/threadloop.png" /> </div><br>
+
 ## 处理新连接的流程
 * 根据配置的端口号、工作线程数和Log记录path开启服务器
 * 初始化服务器（初始化主线程、初始化线程池、绑定listen_fd、INADDR_ANY和port）
