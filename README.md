@@ -3,13 +3,13 @@
 ## 高性能静态网页服务器
    这是一个 Web 服务器项目，目前支持 GET 和 HEAD 请求的解析，POST请求待更新，可以处理静态网页的请求，支持 HTTP 长/短连接，以异步日志的方式保存服务器的运行状态。（大部分源代码都有详尽的注释，值得学习，因水平有限，如有疏漏或错误，直接发在issues即可）
 ## 使用指南
-  git clone https://github.com/StormrageZ/WEB_SERVER.git
-  cd WEB_SERVER
-  ./build.sh
-  运行成功后会出现一个build文件下，进入后找到WebServer文件
-  终端以root权限运行 ./WebServer即可可通过 -p （端口） -t （线程数） -l（日志路径） 改变配置
-  需要在WebServer的同级文件夹下面放一个index.html 文件
-  浏览器打开127.0.0.1即可看到该网页
+ * git clone https://github.com/StormrageZ/WEB_SERVER.git
+ * cd WEB_SERVER
+ * ./build.sh
+ * 运行成功后会出现一个build文件下，进入后找到WebServer文件
+ * 终端以root权限运行 ./WebServer即可可通过 -p （端口） -t （线程数） -l（日志路径） 改变配置
+ * 需要在WebServer的同级文件夹下面放一个index.html 文件
+ * 浏览器打开127.0.0.1即可看到该网页
 ## 技术要点
 * 采用 Reactor 的事件处理模式
 * 使用 Epoll 的 ET 模式实现高效的 I/O 多路复用，NoblockIO
