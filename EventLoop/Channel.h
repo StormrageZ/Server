@@ -34,14 +34,12 @@ public:
     void setEvents(int ev);
     int& getEvents();
     bool EqualAndUpdateLastEvents();
-    int getLastEvents();
 private:
     
     EventLoop *loop_;
     int  fd_;
     int  events_;
     int revents_;// it's the received event types of epoll used by Epoll
-    int lastEvents_;
     std::weak_ptr<ClientRequest> holder_;
     EventCallBack readHandler_;
     EventCallBack writeHandler_;//回调函数
