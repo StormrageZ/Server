@@ -121,14 +121,3 @@ int& Channel::getEvents()
     return events_;
 }
 
-bool Channel::EqualAndUpdateLastEvents()
-{
-    bool ret = (lastEvents_ == events_);
-    lastEvents_ = events_;
-    return ret;
-}
-
-int Channel::getLastEvents()
-{
-    return lastEvents_;
-}
