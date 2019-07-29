@@ -42,7 +42,6 @@ void Epoll::epoll_add(std::shared_ptr<Channel> request, int timeout)
     struct epoll_event event;
     event.data.fd = fd;
     event.events = request->getEvents();
-    request->EqualAndUpdateLastEvents();
     cout<<"epoll_fd开始监听描述符："<<fd<<endl;
     fd2chan_[fd] = request;
     if(epoll_ctl(epollFd_, EPOLL_CTL_ADD, fd, &event) < 0)
@@ -59,8 +58,7 @@ void Epoll::epoll_mod(std::shared_ptr<Channel> request, int timeout)
     if (timeout > 0)
         add_timer(request, timeout);//添加定时器
     int fd = request->getFd();//accept_FD
-    if (!request->EqualAndUpdateLastEvents())
-    {
+
         struct epoll_event event;
         event.data.fd = fd;
         event.events = request->getEvents();//感兴趣的事件
@@ -69,7 +67,7 @@ void Epoll::epoll_mod(std::shared_ptr<Channel> request, int timeout)
             perror("epoll_mod error");
             fd2chan_[fd].reset();
         }
-    }
+    
 }
 
 
@@ -79,9 +77,7 @@ void Epoll::epoll_del(std::shared_ptr<Channel> request)
     int fd = request->getFd();
     struct epoll_event event;
     event.data.fd = fd;
-    event.events = request->getLastEvents();
-    //event.events = 0;
-    // request->EqualAndUpdateLastEvents()
+    event.events = request->getEvents();
     if(epoll_ctl(epollFd_, EPOLL_CTL_DEL, fd, &event) < 0)
     {
         perror("epoll_del error");
